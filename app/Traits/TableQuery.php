@@ -56,12 +56,14 @@ trait TableQuery
             $sortColumns = json_decode($request->get('multiSortMeta'), true);
             if (count($sortColumns)) {
                 foreach ($sortColumns as $sort) {
-                    $query->orderBy($sort['field'], $sort['order'] === 1 ? 'asc' : 'desc');
+                    $query->orderBy($sort['field'], $sort['order'] == 1 ? 'asc' : 'desc');
+//                    $query->orderByRaw("LENGTH(".$sort['field'].") " . ($sort['order'] == 1 ? 'asc' : 'desc'));
                 }
             }
         } else if ($request->has('sortField') && $request->has('sortOrder')) {
             // Sorting
-            $query->orderBy($request->get('sortField'), $request->get('sortOrder') == 1 ? 'asc' : 'desc'); //dirubah dari === menjadi == Deny
+            $query->orderBy($request->get('sortField'), $request->get('sortOrder') == 1 ? 'asc' : 'desc');
+//            $query->orderByRaw("LENGTH(".$request->get('sortField').") " . ($request->get('sortOrder') == 1 ? 'asc' : 'desc'));
         }
 
         // Pagination
