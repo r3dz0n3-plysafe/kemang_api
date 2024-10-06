@@ -4,7 +4,6 @@ namespace App\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 trait TableQuery
@@ -16,7 +15,7 @@ trait TableQuery
      * @param array $columns
      * @param Request $request
      * @param bool $newMapping
-     * @return array|JsonResponse
+     * @return array
      */
     public function queryMethod($query, array $columns, Request $request, bool $newMapping = false)
     {
@@ -92,7 +91,7 @@ trait TableQuery
             return $item;
         });
 
-        $finalResult = [
+        return [
             'metadata' => [
                 'filteredTotal' => $filteredResultTotal,
                 'total' => $resultCount,
@@ -102,11 +101,6 @@ trait TableQuery
             'data' => $filteredResult
         ];
 
-        if ($newMapping) {
-            return $finalResult;
-        }
-
-        return $this->success('Sukses', $finalResult);
     }
 
     public static function queryMethodStatic($query, array $columns, Request $request)

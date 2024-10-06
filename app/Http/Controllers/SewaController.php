@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sewa;
+use App\Traits\TableQuery;
 use Illuminate\Http\Request;
 
 class SewaController extends Controller
 {
-    public function index()
+    use TableQuery;
+
+    public function index(Request $request)
     {
-        return Sewa::all();
+        return $this->queryMethod(Sewa::query(), [], $request);
     }
 
     public function store(Request $request)

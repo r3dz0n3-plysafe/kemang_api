@@ -2,8 +2,6 @@
 
 namespace App\Traits;
 
-use Illuminate\Http\JsonResponse;
-
 trait ResponseApi
 {
     /**
@@ -13,32 +11,28 @@ trait ResponseApi
      * @param integer $statusCode
      * @param object|array|null $data
      * @param boolean $isSuccess
-     * @return JsonResponse
+     * @return array
      */
-    public function coreResponse(string $message, int $statusCode, $data = null, bool $isSuccess = true): JsonResponse
+    public function coreResponse(string $message, int $statusCode, $data = null, bool $isSuccess = true): array
     {
-        // Check the params
-        if (!$message) {
-            return response()->json(['message' => 'Message is required'], 500);
-        }
+        $template = [
+            'success' => $isSuccess,
+            'message' => $message,
+            'code' => $statusCode,
+            'results' => $data
+        ];
 
         // Send the response
         if ($isSuccess) {
-            return response()->json([
-                'message' => $message,
-                'code' => $statusCode,
-                'results' => $data
-            ], $statusCode);
+            return $template;
         }
 
-        $jsonDataError = [
-            'message' => $message,
-        ];
+        $template['message'] = $message;
         if ($data) {
-            $jsonDataError['errors'] = $data;
+            $template['results'] = $data;
 
         }
-        return response()->json($jsonDataError, $statusCode);
+        return $template;
     }
 
     /**
@@ -47,9 +41,9 @@ trait ResponseApi
      * @param string $message
      * @param object|array|null $data
      * @param integer $statusCode
-     * @return JsonResponse
+     * @return array
      */
-    public function success(string $message, $data = null, int $statusCode = 200): JsonResponse
+    public function success(string $message, $data = null, int $statusCode = 200): array
     {
         return $this->coreResponse($message, $statusCode, $data);
     }
@@ -60,9 +54,9 @@ trait ResponseApi
      * @param string $message
      * @param integer $statusCode
      * @param object|array|null $data
-     * @return JsonResponse
+     * @return array
      */
-    public function error(string $message, int $statusCode = 500, $data = null): JsonResponse
+    public function error(string $message, $data = null, int $statusCode = 500): array
     {
         return $this->coreResponse($message, $statusCode, $data, false);
     }
